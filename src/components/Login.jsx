@@ -1,33 +1,34 @@
-import { useForm } from "react-hook-form"
-import { emailValidation, maxPassword, minPassword } from "../utils/validator"
-import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
-import { app } from "../firebase"
-import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useForm } from "react-hook-form";
+import { emailValidation, maxPassword, minPassword } from "../utils/validator";
+import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import { app } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-export const Signin = () => {
-    const {register, handleSubmit,formState:{errors}} = useForm()
-    const auth = getAuth(app)
-    const navigate= useNavigate()
-    const [error, setError] = useState()
-    
+export const Login = () => {
+        const {register, handleSubmit,formState:{errors}} = useForm()
+        const auth = getAuth(app)
+        const navigate= useNavigate()
+        const [error, setError] = useState()
 
-  const createUser = async (data) =>{
+        const loginUser = async (data) =>{
     try {
-        const useCredential = await createUserWithEmailAndPassword(auth,data.email, data.password)
-        console.log(useCredential)
-        navigate ("/login")
+        const response = await signInWithEmailAndPassword(auth,data.email, data.password)
+        console.log(response)
+        navigate ("/auth/products")
     } catch (error) {
         setError(error.message.replace("Firebase: Error (auth/email-already-in-use).",
          "Error email already in use"))
     }
   }
+
   return (
+    
     <>
-    <div className="card" style={{with: "18rem"}}>
+     <div className="card" style={{with: "18rem"}}>
       <div className="card-body">
-        <h5 className="card-title text-center">Create new User </h5>
-        <form onSubmit={handleSubmit (createUser)}>
+        <h5 className="card-title text-center">Login User </h5>
+        <form onSubmit={handleSubmit (loginUser)}>
           <div className="mb-3">
 
             <input
@@ -42,7 +43,6 @@ export const Signin = () => {
               errors.email && <span className="text-danger">{errors.email.message}</span>
              }
           </div>
-
 
           <div className="mb-3">
 
@@ -61,7 +61,7 @@ export const Signin = () => {
 
           <div className="mb-3 d-grid gap-2">
             <button type="submit" className="btn btn-secondary">
-              New Account
+              Bienvenido
             </button>
           </div>
         </form>
@@ -75,3 +75,4 @@ export const Signin = () => {
     </>
   )
 }
+
